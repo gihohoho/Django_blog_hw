@@ -18,3 +18,14 @@ class ArticleListSerializer(serializers.ModelSerializer):
         model = Article
         fields = ("pk", "title", "image", "updated_at",
                   "user")
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.email
+
+    class Meta:
+        model = Article
+        fields = '__all__'
