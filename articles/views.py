@@ -58,12 +58,3 @@ class FeedView(APIView):
 
     def post(self, request):
         pass
-
-
-# 게시글 상세보기
-class ArticleDetailView(APIView):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
