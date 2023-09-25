@@ -33,7 +33,7 @@ class MyUserManager(BaseUserManager):
         return user
 
 
-class MyUser(AbstractBaseUser):
+class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
