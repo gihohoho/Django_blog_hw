@@ -14,10 +14,16 @@ class ArticleListSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.email
 
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
+    def get_comments_count(self, obj):
+        return obj.comments.count()
+
     class Meta:
         model = Article
         fields = ("pk", "title", "image", "updated_at",
-                  "user")
+                  "user", "likes_count", "comments_count")
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -39,6 +45,8 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    comments = CommentSerializer(many=True)
+    likes = serializers.StringRelatedField(many=True)
 
     def get_user(self, obj):
         return obj.user.email
