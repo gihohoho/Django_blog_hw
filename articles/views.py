@@ -2,6 +2,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from django.db.models.query_utils import Q
 
 from articles.models import Article
 from articles.serializers import ArticleCreateSerializer, ArticleListSerializer, ArticleSerializer
@@ -53,8 +54,12 @@ class ArticleDetailView(APIView):
 
 # 모아보기(feed)
 class FeedView(APIView):
-    def get(self, request):
-        pass
+    permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request):
-        pass
+    def get(self, request):
+        q = Q()
+        for user in request.user.followings.all():
+            q.add(Q(user=user), q.OR)
+        feeds = Article.objects.filter(q)
+        serializer = ArticleListSerializer(feeds, many=True)
+        return Response(serializer.data)
