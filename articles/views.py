@@ -110,9 +110,12 @@ class CommentDetailView(APIView):
 class LikeView(APIView):
     def post(self, request, article_id):
         article = get_object_or_404(Article, id=article_id)
-        if request.user in article.likes.all():
-            article.likes.remove(request.user)
-            return Response("좋아요 취소", status=status.HTTP_200_OK)
+        if request.user == article.user:
+            return Response("자추 금지!", status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
-            article.likes.add(request.user)
-            return Response("좋아요 완료", status=status.HTTP_200_OK)
+            if request.user in article.likes.all():
+                article.likes.remove(request.user)
+                return Response("좋아요 취소", status=status.HTTP_200_OK)
+            else:
+                article.likes.add(request.user)
+                return Response("좋아요 완료", status=status.HTTP_200_OK)
