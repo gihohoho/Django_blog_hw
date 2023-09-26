@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.db.models.query_utils import Q
 
 from articles.models import Article
-from articles.serializers import ArticleCreateSerializer, ArticleListSerializer, ArticleSerializer
+from articles.serializers import CommentCreateSerializer, CommentSerializer, ArticleCreateSerializer, ArticleListSerializer, ArticleSerializer
 
 
 # 첫화면
@@ -63,3 +63,29 @@ class FeedView(APIView):
         feeds = Article.objects.filter(q)
         serializer = ArticleListSerializer(feeds, many=True)
         return Response(serializer.data)
+
+
+# 댓글 보기(get)/쓰기(post)
+class CommentView(APIView):
+    def get(self, request, article_id):
+        article = get_object_or_404(Article, id=article_id)
+        comments = article.comments.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, article_id):
+        serializer = CommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, article_id=article_id)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 댓글 수정(put)/삭제(delete)
+class CommentDetailView(APIView):
+    def put(self, request, article_id):
+        pass
+
+    def delete(self, request, article_id):
+        pass

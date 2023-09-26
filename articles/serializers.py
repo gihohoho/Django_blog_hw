@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from articles.models import Article
+from articles.models import Article, Comment
 
 
 class ArticleCreateSerializer(serializers.ModelSerializer):
@@ -18,6 +18,23 @@ class ArticleListSerializer(serializers.ModelSerializer):
         model = Article
         fields = ("pk", "title", "image", "updated_at",
                   "user")
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        return obj.user.email
+
+    class Meta:
+        model = Comment
+        fields = ("user", "content", "updated_at")
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ("content",)
 
 
 class ArticleSerializer(serializers.ModelSerializer):
