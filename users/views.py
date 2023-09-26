@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.contrib.auth import logout as auth_logout
 
 
 # 회원가입
@@ -27,8 +28,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 # 로그아웃
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+class Logout(APIView):
+    def post(self, request):
+        auth_logout(request)
+        return Response({"message": "로그아웃 완료"}, status=status.HTTP_200_OK)
 
 
 # 팔로우
