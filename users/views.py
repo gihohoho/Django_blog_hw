@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from users.models import User
-from users.serializers import UserSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
+from users.serializers import MyArticleSerializer, MyCommentSerializer, UserSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -52,4 +52,20 @@ class ProfileView(APIView):
     def get(self, requset, user_id):
         user = get_object_or_404(User, id=user_id)
         serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
+
+
+# 게시글 조회
+class MyArticleView(APIView):
+    def get(self, requset, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = MyArticleSerializer(user)
+        return Response(serializer.data)
+
+
+# 댓글 조회
+class MyCommentView(APIView):
+    def get(self, requset, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = MyCommentSerializer(user)
         return Response(serializer.data)
