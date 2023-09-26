@@ -26,6 +26,11 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+# 로그아웃
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
 # 팔로우
 class FollowView(APIView):
     def post(self, request, user_id):

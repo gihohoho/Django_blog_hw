@@ -3,23 +3,30 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, email, date_of_birth, fullname, nickname, password=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
         """
         if not email:
             raise ValueError("Users must have an email address")
+        if not fullname:
+            raise ValueError('must have user fullname')
+        if not nickname:
+            raise ValueError('must have user nickname')
 
         user = self.model(
             email=self.normalize_email(email),
+            date_of_birth=date_of_birth,
+            fullname=fullname,
+            nickname=nickname,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password=None):
+    def create_superuser(self, email, date_of_birth, fullname, nickname, password=None):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -27,6 +34,9 @@ class MyUserManager(BaseUserManager):
         user = self.create_user(
             email,
             password=password,
+            date_of_birth=date_of_birth,
+            fullname=fullname,
+            nickname=nickname,
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -39,15 +49,18 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    date_of_birth = models.DateField()
     followings = models.ManyToManyField(
         'self', symmetrical=False, related_name="followers", blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    fullname = models.CharField(max_length=100)
+    nickname = models.CharField(max_length=100)
 
     objects = MyUserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["date_of_birth", "nickname", "fullname"]
 
     def __str__(self):
         return self.email
