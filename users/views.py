@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from users.models import User
-from users.serializers import UserSerializer, MyTokenObtainPairSerializer
+from users.serializers import UserSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -24,7 +24,8 @@ class UserView(APIView):
 # 로그인
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-    
+
+
 # 팔로우
 class FollowView(APIView):
     def post(self, request, user_id):
@@ -36,3 +37,11 @@ class FollowView(APIView):
         else:
             you.followers.add(me)
             return Response("팔로우 완료", status=status.HTTP_200_OK)
+
+
+# 프로필
+class ProfileView(APIView):
+    def get(self, requset, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
