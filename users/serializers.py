@@ -57,3 +57,9 @@ class MyCommentSerializer(TokenObtainPairSerializer):
     class Meta:
         model = User
         fields = ("comment_set",)
+
+
+class DeleteAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"

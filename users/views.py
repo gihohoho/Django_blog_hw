@@ -1,9 +1,9 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
-from rest_framework import status, permissions
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from users.models import User
-from users.serializers import MyArticleSerializer, MyCommentSerializer, UserSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
+from users.serializers import DeleteAccountSerializer, MyArticleSerializer, MyCommentSerializer, UserSerializer, MyTokenObtainPairSerializer, UserProfileSerializer
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -69,3 +69,14 @@ class MyCommentView(APIView):
         user = get_object_or_404(User, id=user_id)
         serializer = MyCommentSerializer(user)
         return Response(serializer.data)
+
+
+# 회원 탈퇴
+# generics.DestroyAPIView 안쓰고도 가능한지? / password 받아서 탈퇴 힌트,,,
+class DeleteAccountView(generics.DestroyAPIView):
+    def delete(self, request, user_id):
+        serializer_class = DeleteAccountSerializer
+        permission_classes = [permissions.IsAuthenticated]
+        user = get_object_or_404(User, id=user_id)
+        user.delete()
+        return Response("회원탈퇴 완료", status=status.HTTP_200_OK)

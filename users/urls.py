@@ -13,4 +13,6 @@ urlpatterns = [
          views.MyArticleView.as_view(), name='myarticle_view'),
     path('mycomment/<int:user_id>/',
          views.MyCommentView.as_view(), name='mycomment_view'),
+    path('deleteaccount/<int:user_id>/',
+         views.DeleteAccountView.as_view(), name='deleteaccount_view'),
 ]
